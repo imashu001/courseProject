@@ -14,6 +14,7 @@ function courseData(data) {
 	this.course_title = data.course_title;
 	this.course_Content = data.course_Content;
 	this.course_description = data.course_description;
+	this.courseFile = data.courseFile
 }
 
 /**
@@ -63,7 +64,7 @@ exports.courseStore = [
 	sanitizeBody("*").escape(),
 	 (req, res) => {
 		try {
-      console.log("in the controller")
+      console.log("in the controller",req.file)
 				var course = new courseModel(
 				{
 					author: req.user._id,
@@ -71,6 +72,7 @@ exports.courseStore = [
 					course_title: req.body.course_title,
 					course_Content: req.body.course_Content,
 					course_description: req.body.course_description,
+					courseFile: req.file.path
 				}
 				);
 				course.save(function (err) {
@@ -82,6 +84,7 @@ exports.courseStore = [
 					course_title: course.course_title,
 					course_Content: course.course_Content,
 					course_description: course.course_description,
+					courseFile: course.courseFile
 				};
 				return apiResponse.successResponseWithData(res,"Course added Successfully.",courseData);
 			});
@@ -158,7 +161,7 @@ exports.courseUpdate = [
         if(!mongoose.Types.ObjectId.isValid(req.params.id)){
           return apiResponse.validationErrorWithData(res, "Invalid Error.", "Invalid ID");
         }
-
+				console.log(req.file)
         var newcourse = new courseModel(
           { 
             author: req.user._id,
@@ -166,7 +169,8 @@ exports.courseUpdate = [
             course_title: req.body.course_title,
             course_Content: req.body.course_Content,
             course_description: req.body.course_description,
-            _id:req.params.id
+						courseFile: req.file.path,
+            _id:req.params.id,
             
           });
   
